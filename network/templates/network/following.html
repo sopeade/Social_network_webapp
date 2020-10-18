@@ -1,0 +1,61 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+
+{% block body %}
+
+<h2>Posts of Users Followed</h2>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <h1><em> {{ message }}</em></h1>
+    {% endfor %}
+</ul>
+{% endif %}
+{% for post in posts %}
+<div class="each_post">
+                <div class="each_sub_post_group">
+                 <a href="{% url 'profile' post.username %}" class="poster_name">{{ post.username }}</a>
+                 <div class="post_post" id="{{post.id}}">{{post.post}}</div>
+                 <span>Likes:</span><div class="like_count" id="cnt{{post.id}}">{{post.like_count}}</div><button class="like_link" id="lk{{post.id}}">Like</button>
+                 <div class="post_date"><small>{{post.timestamp}}</small></div>
+                    <br><br><br>
+                </div>
+            </div>
+
+
+
+{% endfor %}
+
+<br><br><br>
+
+<nav aria-label="page navigation" class="page_navigation">
+    <div class="pagination">
+        {% if posts.has_previous %}
+        <li class="page-item"><a href="?page={{ posts.previous_page_number }}">Previous</a></li>
+        {% endif %}
+
+        {% for num in posts.paginator.page_range %}
+            {% if posts.number == num %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                {{num}}
+            {% endif %}
+        {% endfor %}
+
+        {% if posts.has_next %}
+        <li class="page-item"><a href="?page={{ posts.next_page_number }}">Next</a></li>
+        {% endif %}
+    </div>
+</nav>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}
+{% block script %}
+
+<script src="{% static 'network/edit_post.js' %}"></script>
+{% endblock %}

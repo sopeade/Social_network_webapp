@@ -1,0 +1,67 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="profile_account">
+<h2>Profile Page</h2>
+    <div class="post_section">
+    {% if user.is_authenticated %}
+        {% if logged_user != profile_name %}
+        <button id="fol_unfol"></button>
+        {% endif %}
+
+            <div><span><strong>Username: </strong>{{ profile_name }}</span></div>
+        <div><span><strong>Followers: </strong><span id="num_followers">{{ num_followers }}</span></span></div>
+            <div><span><strong>Following: </strong>{{ num_following }}</span></div><br>
+        </div>
+
+        <div class="profile_posts" >
+            <strong><h4 id="profile_name">{{profile_name|title}} Posts</h4></strong>
+        {% for post in posts %}
+            <div class="each_post">
+            <div class="each_sub_post_group">
+            <p class="post_post" id="{{post.id}}">{{ post }}</p>{% if user.is_authenticated %}{% if post.username|slugify == logged_user %}<button class="edit_button">Edit</button>{% else %}{% endif %}{% endif %}<div id="content_edit"></div>
+            <span>Likes:</span><div class="like_count" id="cnt{{post.id}}">{{post.like_count}}</div><button class="like_link" id="lk{{post.id}}">Like</button>
+            <div class="post_date"><small>{{post.timestamp}}</small></div>
+            </div>
+            </div>
+        {% endfor %}
+        </div>
+        <br><br><br><br><br>
+    </div>
+
+
+    <nav aria-label="page navigation" class="page_navigation">
+    <div class="pagination">
+        <div class="sub_pagination">
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in posts.paginator.page_range %}
+            {% if posts.number == num %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                {{num}}
+            {% endif %}
+        {% endfor %}
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">Next</a>
+        {% endif %}
+        </div>
+    </div><br><br><br><br><br>
+    </nav>
+    {% endif %}
+
+    <script>
+        var profile_name = `{{ profile_name }}`
+        var list_following = `{{ list_following|safe }}`
+    </script>
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'network/follow.js' %}"></script>
+<script src="{% static 'network/edit_post.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+
+{% if user.is_authenticated %}
+<h2><strong>All Posts</strong></h2><br>
+<form action="{% url 'post' %}" method="post">
+    <textarea id="user_post" name="user_post"></textarea>
+    <button class="post_button">Post</button>
+</form>
+{% endif %}
+
+<div class="post_section">
+    {% for post in all_posts %}
+    {% csrf_token %}
+            <div class="each_post">
+                <div class="each_sub_post_group">
+                 <a href="{% url 'profile' post.username %}" class="poster_name">{{ post.username }}</a>
+                 <div class="post_post" id="{{post.id}}">{{post.post}}</div>{% if user.is_authenticated %}{% if post.username|slugify == logged_user %}<button class="edit_button">Edit</button>{% else %}{% endif %}{% endif %}<div id="content_edit"></div>
+                 <span>Likes:</span><div class="like_count" id="cnt{{post.id}}">{{post.like_count}}</div><button class="like_link" id="lk{{post.id}}">Like</button>
+                 <div class="post_date"><small>{{post.timestamp}}</small></div>
+                    <br><br><br>
+                </div>
+            </div>
+    {% endfor %}
+    <br>
+</div>
+
+
+<nav aria-label="page navigation" class="page_navigation">
+    <div class="pagination">
+    {% if all_posts.has_previous %}
+        <li class="page-item"><a href="?page={{ all_posts.previous_page_number }}">Previous</a></li>
+    {% endif %}
+
+    {% for num in all_posts.paginator.page_range %}
+        {% if all_posts.number == num %}
+         <strong>{{ num }}</strong>
+        {% else %}
+            {{num}}
+        {% endif %}
+    {% endfor %}
+
+    {% if all_posts.has_next %}
+        <li class="page-item>"><a href="?page={{ all_posts.next_page_number }}">Next</a></li>
+    {% endif %}
+    </div>
+</nav>
+<br>
+<br>
+<br>
+<br>
+{% endblock %}
+{% block script %}
+
+<script src="{% static 'network/edit_post.js' %}"></script>
+{% endblock %}

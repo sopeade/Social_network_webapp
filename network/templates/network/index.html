@@ -1,0 +1,27 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <em> {{ message }}</em>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
+<strong><h2>New Post</h2></strong><br>
+<form action="{% url 'post' %}" method="post">
+    {% csrf_token %}
+    <textarea id="user_post" name="user_post"></textarea>
+    <div  class="post_button"><button>Post</button></div>
+</form>
+
+{% endif %}
+
+
+{% endblock %}
